@@ -7,7 +7,7 @@ import { connectDB } from './config/db.js';
 import { handleChat } from './controllers/chatController.js';
 import { getProducts, getProductById } from './controllers/productController.js';
 import { getPosts, getPostBySlugOrId } from './controllers/postController.js';
-import { submitContact } from './controllers/contactController.js';
+import { submitContact, getContacts } from './controllers/contactController.js';
 import { seedDatabase } from './seed.js';
 
 dotenv.config();
@@ -57,6 +57,7 @@ app.get('/api/posts', getPosts);
 app.get('/api/posts/:id', getPostBySlugOrId);
 
 app.post('/api/contact', submitContact);
+app.get('/api/contact', getContacts);
 
 app.post('/api/seed', async (req, res) => {
   const success = await seedDatabase();

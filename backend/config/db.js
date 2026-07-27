@@ -1,4 +1,12 @@
 import mongoose from 'mongoose';
+import dns from 'dns';
+
+try {
+  dns.setDefaultResultOrder('ipv4first');
+  dns.setServers(['8.8.8.8', '1.1.1.1']);
+} catch (e) {
+  // ignore
+}
 
 export const connectDB = async () => {
   const mongoUri = process.env.MONGO_URI;
@@ -10,7 +18,7 @@ export const connectDB = async () => {
   }
 
   try {
-    const conn = await mongoose.connect(mongoUri);
+    const conn = await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
     console.log(`✅ MongoDB Atlas Connected: ${conn.connection.host}`);
     return true;
   } catch (error) {

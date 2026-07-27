@@ -23,3 +23,12 @@ export const submitContact = async (req, res) => {
     });
   }
 };
+
+export const getContacts = async (req, res) => {
+  try {
+    const contacts = await Contact.find().sort({ createdAt: -1 });
+    return res.json(contacts);
+  } catch (error) {
+    return res.status(500).json({ success: false, message: error.message });
+  }
+};
