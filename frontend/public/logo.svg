@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none" stroke="#1F1F1F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Nightingale silhouette line art -->
+  <path d="M 25 65 C 20 50, 30 35, 45 30 C 50 20, 65 18, 75 25 C 72 32, 68 36, 62 38 C 72 45, 75 58, 70 70 C 60 82, 40 82, 25 65 Z" fill="#F9F9F9" opacity="0.6"/>
+  <!-- Bird wing and culinary dish cloche curve -->
+  <path d="M 32 50 C 45 42, 62 48, 70 60" stroke="#D4AF37" stroke-width="3"/>
+  <circle cx="68" cy="24" r="2.5" fill="#1F1F1F"/> <!-- Eye -->
+  <path d="M 75 25 L 83 23 L 77 29" fill="#D4AF37"/> <!-- Beak -->
+  <!-- Culinary Serving Lid / Cloche Base line -->
+  <path d="M 18 72 L 82 72" stroke="#1F1F1F" stroke-width="3"/>
+  <path d="M 45 78 L 55 78" stroke="#D4AF37" stroke-width="3"/>
+</svg>
