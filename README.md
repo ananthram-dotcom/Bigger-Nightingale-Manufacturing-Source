@@ -185,5 +185,12 @@ git push -u origin main
 
 ## 📄 License & Attribution
 
-Created by **Bigger Nightingale Manufacturing**.  
+Copyright (c) 2026 **Ananth Ram**. All Rights Reserved.
+
+This project is proprietary software. Public access on GitHub is provided strictly for recruiter, employer, and client portfolio review. Copying, cloning, redistribution, or template usage is strictly prohibited.
+
+For complete license terms, please see [LICENSE.md](LICENSE.md).
+
+Created by **Ananth Ram** (**Bigger Nightingale Manufacturing**).  
 Built autonomously with Google Antigravity.
+
