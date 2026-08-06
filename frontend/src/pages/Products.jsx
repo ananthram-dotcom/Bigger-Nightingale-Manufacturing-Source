@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Check, Star, Sparkles, X, ShoppingBag, FileText, ShieldCheck } from 'lucide-react';
+import { Download, Check, Star, Sparkles, X, Smartphone, FileText, ShieldCheck, Laptop } from 'lucide-react';
 import SEO from '../components/SEO';
 import DietaryFilter from '../components/DietaryFilter';
 import ServingScaler from '../components/ServingScaler';
@@ -35,51 +35,23 @@ const Products = () => {
     const packageData = {
       appTitle: "Bigger Nightingale Manufacturing — Budget Recipe Engine",
       productName: product.name,
-      version: "1.0.0-Production-Offline",
-      licenseType: product.isFree ? "Free Community License" : "Commercial License",
+      version: "1.0.0-Production-PWA",
+      installationType: "Progressive Web App (PWA) Direct Browser Install",
       downloadTimestamp: new Date().toISOString(),
       motto: "Big ideas, beautiful design. Built with Google Antigravity.",
-      offlineRecipeVault: [
+      sampleOfflineVault: [
         {
           id: "rec_01",
           name: "Gourmet Creamy Tuscan Lentils",
           costPerServing: "$1.85",
           prepTime: "10 mins",
           cookTime: "20 mins",
-          dietaryTags: ["Vegan", "Gluten-Free", "Budget"],
           ingredients: [
             "1 cup brown lentils",
             "2 cups vegetable broth",
             "1/2 cup sun-dried tomatoes",
             "2 cups fresh spinach",
-            "1/2 cup coconut milk",
-            "2 cloves garlic, minced"
-          ],
-          instructions: [
-            "Rinse lentils and simmer in vegetable broth for 20 minutes until tender.",
-            "Sauté minced garlic and sun-dried tomatoes in a skillet for 2 minutes.",
-            "Add cooked lentils, coconut milk, and fresh spinach to the skillet.",
-            "Simmer for 3-5 minutes until spinach is wilted and sauce is creamy."
-          ]
-        },
-        {
-          id: "rec_02",
-          name: "Zero-Waste Roasted Vegetable Grain Bowl",
-          costPerServing: "$2.10",
-          prepTime: "15 mins",
-          cookTime: "25 mins",
-          dietaryTags: ["Vegan", "High-Protein", "Budget"],
-          ingredients: [
-            "2 cups mixed leftover roasted vegetables",
-            "1 cup cooked quinoa or brown rice",
-            "1 can chickpeas, drained and rinsed",
-            "2 tbsp lemon-tahini dressing"
-          ],
-          instructions: [
-            "Roast chickpeas with paprika and salt at 400°F (200°C) for 20 mins.",
-            "Warm leftover roasted vegetables.",
-            "Assemble bowls with grains, roasted vegetables, and crispy chickpeas.",
-            "Drizzle with lemon-tahini dressing."
+            "1/2 cup coconut milk"
           ]
         }
       ]
@@ -89,7 +61,7 @@ const Products = () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `${product.name.replace(/[^a-zA-Z0-9]/g, '_')}_Offline_Package.json`;
+    a.download = `${product.name.replace(/[^a-zA-Z0-9]/g, '_')}_Sample_Vault.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -108,7 +80,7 @@ const Products = () => {
     <div className="pt-28 pb-20 bg-surface min-h-screen">
       <SEO
         title="App Editions & Pricing"
-        description="Discover Bigger Nightingale recipe discovery app editions. Free offline version and optional cloud sync suite."
+        description="Discover Bigger Nightingale recipe discovery app editions. Free PWA app version and optional cloud sync suite."
       />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -117,13 +89,13 @@ const Products = () => {
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold sage-badge">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>100% Free Core Access Forever</span>
+            <span>Instant PWA Installation — 100% Free</span>
           </div>
           <h1 className="font-serif text-3xl sm:text-5xl font-bold text-charcoal">
             Nightingale App Editions
           </h1>
           <p className="text-sm sm:text-base text-muted leading-relaxed">
-            Choose the recipe discovery solution tailored to your kitchen routine and grocery budget goals.
+            Nightingale runs directly as a Progressive Web App (PWA). No `.exe` or `.apk` file download needed!
           </p>
         </div>
 
@@ -180,7 +152,7 @@ const Products = () => {
                       {product.price === 0 ? '$0' : `$${product.price}`}
                     </span>
                     <span className="text-xs text-muted">
-                      {product.price === 0 ? 'Free Download' : product.billingCycle || 'one-time'}
+                      {product.price === 0 ? 'Free PWA Install' : product.billingCycle || 'one-time'}
                     </span>
                   </div>
 
@@ -204,7 +176,7 @@ const Products = () => {
                     }`}
                   >
                     <Download className="w-4 h-4" />
-                    {product.ctaText || (product.isFree ? 'Download Free' : 'Get License')}
+                    {product.ctaText || (product.isFree ? 'Install PWA App' : 'Get License')}
                   </button>
                 </div>
               </motion.div>
@@ -213,7 +185,7 @@ const Products = () => {
         )}
       </div>
 
-      {/* Interactive Download Modal */}
+      {/* Clear & Honest Installation Modal */}
       <AnimatePresence>
         {purchasedModal && selectedProduct && (
           <motion.div
@@ -236,49 +208,50 @@ const Products = () => {
               </button>
 
               <div className="w-12 h-12 rounded-full bg-cream text-gold flex items-center justify-center border border-gold/30">
-                <ShoppingBag className="w-6 h-6" />
+                <Laptop className="w-6 h-6" />
               </div>
 
               <div className="space-y-2">
                 <h3 className="font-serif font-bold text-2xl text-charcoal">
-                  {selectedProduct.isFree ? 'Ready to Download' : 'License Key & Package'}
+                  Direct Web & PWA Install
                 </h3>
                 <p className="text-xs text-muted leading-relaxed">
-                  Click below to generate and download your official <strong>{selectedProduct.name}</strong> offline package directly to your computer.
+                  <strong>Bigger Nightingale</strong> runs as a modern Progressive Web App (PWA). You do not need a separate `.exe` or `.apk` download file!
                 </p>
               </div>
 
-              {downloadSuccess ? (
-                <div className="p-4 rounded-2xl bg-sage/20 border border-sage text-xs text-sage-dark space-y-1 text-center font-medium">
-                  <ShieldCheck className="w-5 h-5 mx-auto text-sage-dark mb-1" />
-                  <p className="font-semibold">Download Complete!</p>
-                  <p className="text-[11px] text-charcoal/80">File saved to your Downloads folder.</p>
+              <div className="p-4 rounded-2xl bg-surface border border-cream space-y-3 text-xs text-charcoal">
+                <div className="flex items-center gap-2 font-semibold text-gold">
+                  <Smartphone className="w-4 h-4" /> How to Install to Home Screen:
                 </div>
-              ) : (
-                <div className="p-4 rounded-2xl bg-surface border border-cream space-y-2 text-xs text-charcoal">
-                  <p className="font-semibold text-charcoal flex items-center gap-1.5">
-                    <FileText className="w-4 h-4 text-gold" /> Offline Installer & Recipe Vault (.json)
-                  </p>
-                  <p className="text-muted">
-                    Includes 10,000+ budget recipe data structures, pantry matching algorithm configs, and cost-per-serving calculations.
-                  </p>
-                </div>
-              )}
+                <ol className="list-decimal list-inside space-y-1.5 text-muted leading-relaxed text-[11px]">
+                  <li>Look at your browser's top address bar.</li>
+                  <li>Click the <strong>"Install App" / Star icon</strong>.</li>
+                  <li>Enjoy instant full desktop & mobile home screen access with offline caching!</li>
+                </ol>
+              </div>
 
-              <div className="space-y-3">
+              {downloadSuccess ? (
+                <div className="p-3 rounded-xl bg-sage/20 border border-sage text-xs text-sage-dark text-center font-medium">
+                  <ShieldCheck className="w-4 h-4 mx-auto text-sage-dark mb-0.5" />
+                  <p>Sample Recipe Database (.json) Downloaded!</p>
+                </div>
+              ) : null}
+
+              <div className="space-y-2.5">
                 <button
                   onClick={() => triggerRealDownload(selectedProduct)}
-                  className="w-full py-3.5 rounded-full bg-gold text-white text-xs font-semibold hover:bg-gold-dark transition-all shadow-gold-glow flex items-center justify-center gap-2"
+                  className="w-full py-3.5 rounded-full bg-charcoal text-white text-xs font-semibold hover:bg-gold transition-all shadow-soft flex items-center justify-center gap-2"
                 >
-                  <Download className="w-4 h-4" />
-                  {downloadSuccess ? 'Download Again' : 'Click to Download Package (.json)'}
+                  <FileText className="w-4 h-4 text-gold" />
+                  Download Sample Recipe Vault (.json)
                 </button>
 
                 <button
                   onClick={() => setPurchasedModal(false)}
-                  className="w-full py-3 rounded-full bg-surface text-charcoal text-xs font-medium hover:bg-cream transition-colors"
+                  className="w-full py-2.5 rounded-full bg-surface text-charcoal text-xs font-medium hover:bg-cream transition-colors"
                 >
-                  Close Window
+                  Close & Continue Browsing
                 </button>
               </div>
             </motion.div>
