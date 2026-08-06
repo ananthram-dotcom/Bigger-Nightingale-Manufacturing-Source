@@ -16,6 +16,7 @@ const GeminiChatbot = () => {
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const chatEndRef = useRef(null);
+  const inputRef = useRef(null);
 
   const scrollToBottom = () => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -24,8 +25,20 @@ const GeminiChatbot = () => {
   useEffect(() => {
     if (isOpen) {
       scrollToBottom();
+      inputRef.current?.focus();
     }
   }, [messages, isOpen]);
+
+  // Handle Escape key to close dialog for accessibility
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' && isOpen) {
+        setIsOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isOpen]);
 
   const handleSend = async (e) => {
     e.preventDefault();
@@ -44,7 +57,6 @@ const GeminiChatbot = () => {
     setLoading(true);
 
     try {
-      // Prepare message history for context
       const history = messages
         .filter(m => m.id !== 1)
         .slice(-6)
@@ -54,7 +66,7 @@ const GeminiChatbot = () => {
         }));
 
       const res = await sendChatMessage(userMsgText, history);
-      
+
       const aiMsg = {
         id: Date.now() + 1,
         sender: 'ai',
@@ -90,11 +102,13 @@ const GeminiChatbot = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => setIsOpen(true)}
+            aria-expanded={isOpen}
+            aria-label="Open Nightingale AI Culinary Assistant"
             className="flex items-center gap-3 px-5 py-3.5 rounded-full bg-charcoal text-white shadow-elevated border border-gold/40 hover:bg-gold transition-all duration-300 group"
           >
             <div className="relative">
               <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center p-1 shadow-inner">
-                <img src="/logo.svg" alt="Nightingale AI" className="w-full h-full object-contain" />
+                <img src="/logo.svg" alt="Nightingale AI Logo" className="w-full h-full object-contain" />
               </div>
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-sage rounded-full border-2 border-charcoal animate-pulse"></span>
             </div>
@@ -110,10 +124,13 @@ const GeminiChatbot = () => {
         )}
       </AnimatePresence>
 
-      {/* Floating Chat Modal */}
+      {/* Accessible Floating Chat Modal Dialog */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            role="dialog"
+            aria-modal="true"
+            aria-label="Nightingale AI Culinary Assistant Dialog"
             initial={{ opacity: 0, y: 30, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 30, scale: 0.95 }}
@@ -130,7 +147,7 @@ const GeminiChatbot = () => {
                   <h3 className="font-serif text-sm font-semibold text-white flex items-center gap-1.5">
                     Nightingale AI Chef
                     <span className="px-1.5 py-0.5 rounded text-[9px] bg-gold/30 text-gold uppercase tracking-wider font-sans font-bold">
-                      Gemini 2.5
+                      Gemini 1.5
                     </span>
                   </h3>
                   <p className="text-[11px] text-white/60">Cloud & Offline Culinary Guide</p>
@@ -140,7 +157,7 @@ const GeminiChatbot = () => {
               <button
                 onClick={() => setIsOpen(false)}
                 className="p-1.5 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-colors"
-                aria-label="Minimize Chat"
+                aria-label="Minimize Chat Assistant"
               >
                 <Minimize2 className="w-4 h-4" />
               </button>
@@ -194,16 +211,19 @@ const GeminiChatbot = () => {
             {/* Input Form */}
             <form onSubmit={handleSend} className="p-3 bg-white border-t border-cream flex items-center gap-2">
               <input
+                ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Ask about budget recipes or app..."
+                aria-label="Type your culinary question"
                 className="flex-1 bg-surface border border-cream rounded-xl px-3.5 py-2.5 text-xs text-charcoal focus:outline-none focus:border-gold transition-colors"
                 disabled={loading}
               />
               <button
                 type="submit"
                 disabled={!input.trim() || loading}
+                aria-label="Send message to AI assistant"
                 className="p-2.5 bg-charcoal text-white rounded-xl hover:bg-gold disabled:opacity-40 disabled:hover:bg-charcoal transition-all shadow-sm"
               >
                 <Send className="w-4 h-4 text-gold hover:text-white" />
