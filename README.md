@@ -8,21 +8,25 @@
 [![MongoDB](https://img.shields.io/badge/Database-MongoDB%20Atlas-47A248.svg)](https://www.mongodb.com/cloud/atlas)
 [![Gemini AI](https://img.shields.io/badge/AI Engine-Google%20Gemini%201.5-8E75B2.svg)](https://aistudio.google.com/)
 [![Deployment](https://img.shields.io/badge/Deployment-Vercel%20%2B%20Render-black.svg)](https://vercel.com/)
+[![Security](https://img.shields.io/badge/Security-Helmet%20%2B%20Zod%20%2B%20JWT-red.svg)](https://helmetjs.github.io/)
+[![PWA](https://img.shields.io/badge/PWA-Workbox%20%2B%20ServiceWorker-green.svg)](https://vite-pwa-org.netlify.app/)
 
 Welcome to **Bigger Nightingale Manufacturing**, a full-stack MERN application engineering solution designed as a cloud-synced and 100% offline-capable budget recipe discovery platform tailored for budget-conscious culinary enthusiasts.
 
-This repository features production-ready software architecture, responsive UI components, RESTful API design, NoSQL data modeling, and generative AI integration built with a 100% free-tier cloud deployment specification.
+This repository features production-ready software architecture, security-hardened API protection, JWT role-based authentication, Progressive Web App (PWA) offline service workers, TanStack Query request caching, and automated GitHub Actions CI/CD pipelines.
 
 ---
 
 ## 🏗️ Technical Architecture & Key Highlights
 
 - **Full-Stack MERN Architecture**: Modular separation of concerns with a React SPA frontend and a decoupled Node.js/Express REST API backend.
+- **Production Security Hardening**: HTTP security headers via `helmet`, NoSQL injection protection via `express-mongo-sanitize`, rate limiting via `express-rate-limit`, and payload sanitization via `zod`.
+- **JWT Auth & Role Authorization**: Token-based user authentication (`jsonwebtoken`, `bcryptjs`) with role-based route protection (`protect`, `adminOnly`).
+- **Progressive Web App (PWA)**: Offline service worker caching (`vite-plugin-pwa` + Workbox) allowing full desktop & mobile home screen app installation.
+- **State Management & Caching**: Global persistent state via `zustand` and background request revalidation via `@tanstack/react-query` (10-min stale time).
 - **Artificial Intelligence Integration**: Google Gemini 1.5 Flash LLM SDK integration with built-in graceful degradation and intelligent offline fallback handling.
-- **Database Modeling & ORM**: NoSQL data persistence engineered with MongoDB Atlas and Mongoose schema validation for Products, Blog Posts, and Inquiries.
-- **Component-Driven UI/UX Design System**: High-contrast, responsive interface using Tailwind CSS v3, Framer Motion micro-animations, and custom typography (`Playfair Display` + `Inter`).
-- **Dynamic SEO & Performance Optimization**: Headless Meta Tag management using React Helmet Async for OpenGraph metadata and search engine indexing.
-- **Hybrid Local Mode**: Operational offline mode enabling zero-dependency local testing without mandatory cloud API or database connections.
+- **Component-Driven UI/UX Design System**: High-contrast, responsive interface using Tailwind CSS v3, Framer Motion micro-animations, accessible ARIA dialogs, dietary tags, portion scalers, and custom typography (`Playfair Display` + `Inter`).
+- **Automated CI/CD & Testing**: Native Node test suite (`supertest`) passing automated API health checks alongside GitHub Actions CI workflows (`.github/workflows/ci.yml`).
 
 ---
 
@@ -38,7 +42,6 @@ This repository features production-ready software architecture, responsive UI c
 - **Typography Standards**:
   - **Headings**: `Playfair Display` (Serif)
   - **Body Text**: `Inter` (Sans-Serif)
-- **Logo Concept**: Minimalist line-art Nightingale integrated with a culinary cloche/serving lid.
 
 ---
 
@@ -46,20 +49,24 @@ This repository features production-ready software architecture, responsive UI c
 
 ### Frontend Engineering (`/frontend`)
 - **Framework**: React 18 (Vite Bundler)
+- **Data Caching**: TanStack Query v5 (`@tanstack/react-query`)
+- **Global State**: Zustand (`zustand` with persistence)
+- **PWA & Offline Engine**: `vite-plugin-pwa` + Workbox Service Worker (`dist/sw.js`)
 - **Styling & Design System**: Tailwind CSS v3 + Custom Utility Tokens
 - **Animations & Interactivity**: Framer Motion
-- **Routing**: React Router DOM v6 (Single Page Application Architecture)
+- **Routing**: React Router DOM v6
 - **SEO & Metadata Management**: React Helmet Async
-- **HTTP Client**: Axios (Asynchronous API Integrations)
+- **HTTP Client**: Axios
 - **Icons**: Lucide React
-- **Deployment Spec**: `vercel.json` SPA Rewrite Routing Configuration
 
 ### Backend Engineering (`/backend`)
 - **Runtime & Server**: Node.js + Express.js Framework
-- **Database Engine**: MongoDB Atlas via Mongoose ODM Schemas (`Product`, `Post`, `Contact`)
-- **AI & Natural Language Processing**: Google Generative AI SDK (`@google/generative-ai`) Gemini 1.5 API Proxy Endpoint
-- **Middleware & Security**: `dotenv`, `cors`, JSON Body Parser
-- **DevOps Spec**: `render.yaml` Infrastructure-as-Code (IaC) configuration for Render Web Service
+- **Security & Hardening**: `helmet`, `express-rate-limit`, `zod`, `express-mongo-sanitize`
+- **Authentication**: `jsonwebtoken` (JWT), `bcryptjs` password hashing
+- **Database Engine**: MongoDB Atlas via Mongoose ODM Schemas (`User`, `Product`, `Post`, `Contact`)
+- **AI Engine**: Google Generative AI SDK (`@google/generative-ai`) Gemini 1.5 API Proxy Endpoint
+- **Testing**: Node Native Test Runner + `supertest` API Integration Test Suite
+- **CI/CD Pipeline**: GitHub Actions (`.github/workflows/ci.yml`)
 
 ---
 
@@ -94,11 +101,10 @@ Create a `.env` file in the `/backend` folder:
 PORT=5000
 MONGO_URI=mongodb+srv://<username>:<password>@cluster0.mongodb.net/nightingale?retryWrites=true&w=majority
 GEMINI_API_KEY=your_gemini_api_key_here
+JWT_SECRET=nightingale_prod_jwt_secret_key_2026
 CLIENT_URL=http://localhost:5173
 NODE_ENV=development
 ```
-
-> **Note**: If `MONGO_URI` or `GEMINI_API_KEY` are left blank, the backend operates in **Hybrid Local Mode** with built-in mock fallbacks so you can test all features offline instantly!
 
 Start the backend server:
 ```bash
@@ -108,13 +114,12 @@ npm run dev
 ```
 The Express API server will start on `http://localhost:5000`.
 
-### 4. Database Seeding (Optional)
-To seed initial budget recipe app products and culinary blog posts into your MongoDB Atlas database:
+### 4. Running Backend Tests
+To execute the automated API security & health test suite:
 ```bash
 cd backend
-npm run seed
+npm test
 ```
-Or send a `POST` request to `http://localhost:5000/api/seed`.
 
 ---
 
@@ -123,12 +128,10 @@ Or send a `POST` request to `http://localhost:5000/api/seed`.
 This project is optimized to run **100% free of charge** using Vercel (Frontend) and Render (Backend).
 
 ### Step A: Push Source Code to GitHub
-1. Create a new public or private repository on GitHub (e.g. `Bigger-Nightingale-Manufacturing-Source`).
-2. Run in terminal:
 ```bash
-git remote add origin https://github.com/your-username/Bigger-Nightingale-Manufacturing-Source.git
-git branch -M main
-git push -u origin main
+git add .
+git commit -m "feat: production industry standards upgrade"
+git push origin main
 ```
 
 ---
@@ -142,9 +145,9 @@ git push -u origin main
    - **Root Directory**: `frontend`
    - **Build Command**: `npm run build`
    - **Output Directory**: `dist`
-4. Add Environment Variable (Optional):
+4. Add Environment Variable:
    - `VITE_API_URL`: `https://your-backend-render-app.onrender.com/api`
-5. Click **Deploy**. Vercel will build and host your frontend with custom domain HTTPS for free.
+5. Click **Deploy**. Vercel will build and host your PWA with custom domain HTTPS for free.
 
 ---
 
@@ -158,10 +161,10 @@ git push -u origin main
    - **Environment**: `Node`
    - **Build Command**: `npm install`
    - **Start Command**: `npm start`
-   - **Instance Type**: `Free`
-4. Add Production Environment Variables:
+4. Add Environment Variables:
    - `MONGO_URI`: Your MongoDB Atlas connection string.
    - `GEMINI_API_KEY`: Your free Gemini API key from [Google AI Studio](https://aistudio.google.com/).
+   - `JWT_SECRET`: `nightingale_jwt_prod_secret_98f73b29d41a02e6`
    - `CLIENT_URL`: Your Vercel frontend URL (e.g. `https://bigger-nightingale.vercel.app`).
    - `NODE_ENV`: `production`
 5. Click **Create Web Service**.
@@ -193,4 +196,3 @@ For complete license terms, please see [LICENSE.md](LICENSE.md).
 
 Created by **Ananth Ram** (**Bigger Nightingale Manufacturing**).  
 Built autonomously with Google Antigravity.
-
