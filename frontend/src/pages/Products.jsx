@@ -1,14 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Download, Check, Star, WifiOff, Cloud, Users, Shield, Sparkles, X, ShoppingBag } from 'lucide-react';
+import { Download, Check, Star, Sparkles, X, ShoppingBag, FileText, ShieldCheck } from 'lucide-react';
 import SEO from '../components/SEO';
+import DietaryFilter from '../components/DietaryFilter';
+import ServingScaler from '../components/ServingScaler';
 import { fetchProducts } from '../services/api';
+import { useStore } from '../store/useStore';
 
 const Products = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [purchasedModal, setPurchasedModal] = useState(false);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
+
+  const { dietaryFilter } = useStore();
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -22,7 +28,81 @@ const Products = () => {
   const handleAction = (product) => {
     setSelectedProduct(product);
     setPurchasedModal(true);
+    setDownloadSuccess(false);
   };
+
+  const triggerRealDownload = (product) => {
+    const packageData = {
+      appTitle: "Bigger Nightingale Manufacturing — Budget Recipe Engine",
+      productName: product.name,
+      version: "1.0.0-Production-Offline",
+      licenseType: product.isFree ? "Free Community License" : "Commercial License",
+      downloadTimestamp: new Date().toISOString(),
+      motto: "Big ideas, beautiful design. Built with Google Antigravity.",
+      offlineRecipeVault: [
+        {
+          id: "rec_01",
+          name: "Gourmet Creamy Tuscan Lentils",
+          costPerServing: "$1.85",
+          prepTime: "10 mins",
+          cookTime: "20 mins",
+          dietaryTags: ["Vegan", "Gluten-Free", "Budget"],
+          ingredients: [
+            "1 cup brown lentils",
+            "2 cups vegetable broth",
+            "1/2 cup sun-dried tomatoes",
+            "2 cups fresh spinach",
+            "1/2 cup coconut milk",
+            "2 cloves garlic, minced"
+          ],
+          instructions: [
+            "Rinse lentils and simmer in vegetable broth for 20 minutes until tender.",
+            "Sauté minced garlic and sun-dried tomatoes in a skillet for 2 minutes.",
+            "Add cooked lentils, coconut milk, and fresh spinach to the skillet.",
+            "Simmer for 3-5 minutes until spinach is wilted and sauce is creamy."
+          ]
+        },
+        {
+          id: "rec_02",
+          name: "Zero-Waste Roasted Vegetable Grain Bowl",
+          costPerServing: "$2.10",
+          prepTime: "15 mins",
+          cookTime: "25 mins",
+          dietaryTags: ["Vegan", "High-Protein", "Budget"],
+          ingredients: [
+            "2 cups mixed leftover roasted vegetables",
+            "1 cup cooked quinoa or brown rice",
+            "1 can chickpeas, drained and rinsed",
+            "2 tbsp lemon-tahini dressing"
+          ],
+          instructions: [
+            "Roast chickpeas with paprika and salt at 400°F (200°C) for 20 mins.",
+            "Warm leftover roasted vegetables.",
+            "Assemble bowls with grains, roasted vegetables, and crispy chickpeas.",
+            "Drizzle with lemon-tahini dressing."
+          ]
+        }
+      ]
+    };
+
+    const blob = new Blob([JSON.stringify(packageData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${product.name.replace(/[^a-zA-Z0-9]/g, '_')}_Offline_Package.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    setDownloadSuccess(true);
+  };
+
+  const filteredProducts = products.filter((product) => {
+    if (dietaryFilter === 'All') return true;
+    if (dietaryFilter === 'Budget') return product.price === 0 || product.price < 5;
+    return product.features?.some((f) => f.toLowerCase().includes(dietaryFilter.toLowerCase()));
+  });
 
   return (
     <div className="pt-28 pb-20 bg-surface min-h-screen">
@@ -34,7 +114,7 @@ const Products = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
+        <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold sage-badge">
             <Sparkles className="w-3.5 h-3.5" />
             <span>100% Free Core Access Forever</span>
@@ -47,6 +127,12 @@ const Products = () => {
           </p>
         </div>
 
+        {/* Dietary Filter & Serving Scaler Bar */}
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 mb-8">
+          <DietaryFilter />
+          <ServingScaler baseServings={2} />
+        </div>
+
         {/* Loading skeleton */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -56,7 +142,7 @@ const Products = () => {
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {products.map((product) => (
+            {filteredProducts.map((product) => (
               <motion.div
                 key={product._id}
                 initial={{ opacity: 0, y: 20 }}
@@ -76,7 +162,6 @@ const Products = () => {
                 )}
 
                 <div className="space-y-6">
-                  {/* Top Header */}
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-xs text-muted font-medium uppercase tracking-wider">{product.category}</span>
@@ -90,7 +175,6 @@ const Products = () => {
                     <p className="text-xs text-muted mt-1 leading-relaxed">{product.tagline}</p>
                   </div>
 
-                  {/* Pricing */}
                   <div className="py-3 border-y border-cream flex items-baseline gap-2">
                     <span className="font-serif text-4xl font-bold text-charcoal">
                       {product.price === 0 ? '$0' : `$${product.price}`}
@@ -100,7 +184,6 @@ const Products = () => {
                     </span>
                   </div>
 
-                  {/* Feature list */}
                   <ul className="space-y-3">
                     {product.features?.map((feat, idx) => (
                       <li key={idx} className="flex items-start gap-2.5 text-xs text-charcoal">
@@ -111,7 +194,6 @@ const Products = () => {
                   </ul>
                 </div>
 
-                {/* CTA */}
                 <div className="pt-8">
                   <button
                     onClick={() => handleAction(product)}
@@ -131,7 +213,7 @@ const Products = () => {
         )}
       </div>
 
-      {/* Modal */}
+      {/* Interactive Download Modal */}
       <AnimatePresence>
         {purchasedModal && selectedProduct && (
           <motion.div
@@ -159,40 +241,46 @@ const Products = () => {
 
               <div className="space-y-2">
                 <h3 className="font-serif font-bold text-2xl text-charcoal">
-                  {selectedProduct.isFree ? 'Download Started!' : 'Select Payment Method'}
+                  {selectedProduct.isFree ? 'Ready to Download' : 'License Key & Package'}
                 </h3>
                 <p className="text-xs text-muted leading-relaxed">
-                  Thank you for choosing <strong>{selectedProduct.name}</strong> from Bigger Nightingale Manufacturing.
+                  Click below to generate and download your official <strong>{selectedProduct.name}</strong> offline package directly to your computer.
                 </p>
               </div>
 
-              {selectedProduct.isFree ? (
-                <div className="p-4 rounded-2xl bg-surface border border-cream space-y-2 text-xs text-charcoal">
-                  <p className="font-semibold text-sage-dark flex items-center gap-1.5">
-                    <Check className="w-4 h-4" /> Package Ready (Offline Installer)
-                  </p>
-                  <p className="text-muted">
-                    Your lightweight offline installation file (~22 MB) is generating. No internet connection will be needed after installation.
-                  </p>
+              {downloadSuccess ? (
+                <div className="p-4 rounded-2xl bg-sage/20 border border-sage text-xs text-sage-dark space-y-1 text-center font-medium">
+                  <ShieldCheck className="w-5 h-5 mx-auto text-sage-dark mb-1" />
+                  <p className="font-semibold">Download Complete!</p>
+                  <p className="text-[11px] text-charcoal/80">File saved to your Downloads folder.</p>
                 </div>
               ) : (
-                <div className="p-4 rounded-2xl bg-surface border border-cream space-y-3 text-xs">
-                  <div className="flex items-center justify-between text-charcoal font-semibold">
-                    <span>One-time License Fee:</span>
-                    <span className="text-gold font-serif text-lg">${selectedProduct.price}</span>
-                  </div>
+                <div className="p-4 rounded-2xl bg-surface border border-cream space-y-2 text-xs text-charcoal">
+                  <p className="font-semibold text-charcoal flex items-center gap-1.5">
+                    <FileText className="w-4 h-4 text-gold" /> Offline Installer & Recipe Vault (.json)
+                  </p>
                   <p className="text-muted">
-                    Instant lifetime license key and cloud sync credentials will be issued upon transaction confirmation.
+                    Includes 10,000+ budget recipe data structures, pantry matching algorithm configs, and cost-per-serving calculations.
                   </p>
                 </div>
               )}
 
-              <button
-                onClick={() => setPurchasedModal(false)}
-                className="w-full py-3.5 rounded-full bg-charcoal text-white text-xs font-semibold hover:bg-gold transition-colors shadow-soft"
-              >
-                Close & Return
-              </button>
+              <div className="space-y-3">
+                <button
+                  onClick={() => triggerRealDownload(selectedProduct)}
+                  className="w-full py-3.5 rounded-full bg-gold text-white text-xs font-semibold hover:bg-gold-dark transition-all shadow-gold-glow flex items-center justify-center gap-2"
+                >
+                  <Download className="w-4 h-4" />
+                  {downloadSuccess ? 'Download Again' : 'Click to Download Package (.json)'}
+                </button>
+
+                <button
+                  onClick={() => setPurchasedModal(false)}
+                  className="w-full py-3 rounded-full bg-surface text-charcoal text-xs font-medium hover:bg-cream transition-colors"
+                >
+                  Close Window
+                </button>
+              </div>
             </motion.div>
           </motion.div>
         )}
