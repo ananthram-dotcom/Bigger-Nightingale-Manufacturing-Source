@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Sparkles, Download, WifiOff, HeartHandshake, ShieldCheck, DollarSign, Utensils, ArrowRight, CheckCircle2, Star, Smartphone, RefreshCw } from 'lucide-react';
+import { Sparkles, Download, WifiOff, HeartHandshake, ShieldCheck, DollarSign, Utensils, ArrowRight } from 'lucide-react';
 import SEO from '../components/SEO';
 
 const Home = () => {

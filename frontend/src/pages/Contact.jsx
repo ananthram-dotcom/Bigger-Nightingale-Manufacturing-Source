@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Mail, MessageSquare, Send, CheckCircle2, MapPin, Phone, Sparkles, HeartHandshake } from 'lucide-react';
+import { Mail, MessageSquare, Send, CheckCircle2, MapPin, HeartHandshake } from 'lucide-react';
 import SEO from '../components/SEO';
 import { submitContactForm } from '../services/api';
 
@@ -27,7 +27,7 @@ const Contact = () => {
       setSubmitted(true);
       setStatusMsg(res.message || 'Thank you! Your message has been sent successfully.');
       setFormData({ name: '', email: '', subject: 'General Inquiry', message: '' });
-    } catch (err) {
+    } catch {
       setStatusMsg('There was an issue sending your message. Please try again.');
     } finally {
       setLoading(false);

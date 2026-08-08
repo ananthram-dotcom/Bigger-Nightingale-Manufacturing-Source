@@ -32,7 +32,7 @@ export const fetchProducts = async () => {
   try {
     const response = await api.get('/products');
     return response.data;
-  } catch (error) {
+  } catch {
     console.warn('Backend unavailable, using local product data fallback.');
     return getFallbackProducts();
   }
@@ -42,7 +42,7 @@ export const fetchPosts = async () => {
   try {
     const response = await api.get('/posts');
     return response.data;
-  } catch (error) {
+  } catch {
     console.warn('Backend unavailable, using local blog post fallback.');
     return getFallbackPosts();
   }

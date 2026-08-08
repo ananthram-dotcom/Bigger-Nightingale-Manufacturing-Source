@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Clock, User, ArrowRight, Tag, BookOpen, Sparkles } from 'lucide-react';
+import { Clock, User, ArrowRight, Sparkles } from 'lucide-react';
 import SEO from '../components/SEO';
 import { fetchPosts } from '../services/api';
 

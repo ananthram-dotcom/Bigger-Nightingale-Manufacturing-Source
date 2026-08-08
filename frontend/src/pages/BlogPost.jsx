@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Clock, User, Share2, Sparkles, CheckCircle2 } from 'lucide-react';
+import { ArrowLeft, Clock, User, Sparkles, CheckCircle2 } from 'lucide-react';
 import SEO from '../components/SEO';
 import { fetchPosts } from '../services/api';
 

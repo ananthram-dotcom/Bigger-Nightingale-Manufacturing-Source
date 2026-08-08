@@ -1,5 +1,5 @@
 import React from 'react';
-import { Filter, Sparkles } from 'lucide-react';
+import { Filter } from 'lucide-react';
 import { useStore } from '../store/useStore';
 
 const filterOptions = [

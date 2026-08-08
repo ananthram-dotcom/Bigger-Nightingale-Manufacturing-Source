@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { MessageSquare, X, Send, Bot, User, Sparkles, Loader2, Minimize2 } from 'lucide-react';
+import { Send, User, Sparkles, Loader2, Minimize2 } from 'lucide-react';
 import { sendChatMessage } from '../services/api';
 
 const GeminiChatbot = () => {
@@ -74,7 +74,7 @@ const GeminiChatbot = () => {
         time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
       };
       setMessages((prev) => [...prev, aiMsg]);
-    } catch (err) {
+    } catch {
       setMessages((prev) => [
         ...prev,
         {
